@@ -1,6 +1,5 @@
 #include <iostream>
 
-
 struct UsrNode
 {
     int m_usr_date{ };
@@ -31,6 +30,7 @@ int main()
     // non-static requires instance of class, static does not
     DataFormat::GetNode();
     Format.DisplayNode();
+
     return 0;
 }
 
