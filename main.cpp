@@ -43,7 +43,7 @@ void EnterInformationFile()
 }
 
 
-void EnterInformationFile(string username, string password)
+void IsValidCredential(string username, string password)
 {
 
 }
