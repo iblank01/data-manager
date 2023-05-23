@@ -1,67 +1,49 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 
-struct UsrNode
-{
-    int m_usr_date{ };
-    int m_usr_weight{ };
-    std::string m_usr_note{ };
+using namespace std;
 
-    UsrNode *r_ptr;
-    UsrNode *l_ptr;
-};
-
-
-class DataFormat
-{
-private:
-    UsrNode* head_ptr_;
-public:
-    static UsrNode *GetNode();
-    void DisplayNode();
-};
+// functions for login management
+void EnterInformationFile();
+void IsValidCredential(string username, string password);
 
 
 
 int main()
 {
-    // create instance of DataFormat
-    DataFormat Format{};
-
-    // non-static requires instance of class, static does not
-    DataFormat::GetNode();
-    Format.DisplayNode();
-
+    EnterInformationFile();
     return 0;
 }
 
 
 
-UsrNode* DataFormat::GetNode()
+void EnterInformationFile()
 {
-    UsrNode *new_node;
-    new_node = (UsrNode *) malloc(sizeof(UsrNode));// new_node uses malloc
+    // create object userPassFile in fstream class
+    fstream userFile ("/Users/ianblankenship/data-managing/userPassFile.txt", ios::app);
 
-    // allow usr enter date
-    std::cout << "Date: ";
-    std::cin >> new_node->m_usr_date;
-    // allow usr enter weight
-    std::cout << "Weight: ";
-    std::cin >> new_node->m_usr_weight;
-    // allow usr enter a note (NOTE: FIX STRING ENTRY)
-    std::cout << "Note: ";
-    std::cin >> new_node->m_usr_date;
+    // exit if the file does not exist/cannot be opened
+    if (!userFile)
+    {
+        cout << '\n' << "File Failed to open/Not Found" << '\n';
+        exit(-1);
+    }
 
-    new_node->l_ptr = nullptr;
-    new_node->r_ptr = nullptr;  // the new_node sides point to nothing by default
+    // create string var to store user/pass and read input into it
+    string info_store{ };
+    cout << "Enter a username and password, separated by a space: ";
+    getline(cin, info_store);
 
-    return new_node;
-}   // end of GetNode()
+    // write string data to file
+    userFile << info_store << endl;
+
+    // close stream
+    userFile.close();
+}
 
 
-void DataFormat::DisplayNode()
+void EnterInformationFile(string username, string password)
 {
-    // DEBUGGING (L: 58)
-    std::cout << '\n' << "Entered 'Display Node' function." << '\n';
 
-
-}   // end of DisplayNode
+}

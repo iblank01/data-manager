@@ -1,3 +1,0 @@
-/Users/ianblankenship/data-managing/cmake-build-debug/CMakeFiles/data_managing.dir
-/Users/ianblankenship/data-managing/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/ianblankenship/data-managing/cmake-build-debug/CMakeFiles/rebuild_cache.dir
