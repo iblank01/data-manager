@@ -1,119 +1,72 @@
-#include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
+#include <sstream>
+#include <SQLiteCpp/SQLiteCpp.h>
 
-using namespace std;
+int main() {
+    SQLite::Database db("login_system.db3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
 
-// functions for login management
-void EnterInformationFile();
-int IsValidCredential(string username, string password);
-void MainMenu();
+    // Create the users table if it doesn't exist
+    db.exec("CREATE TABLE IF NOT EXISTS users (username TEXT UNIQUE, password TEXT)");
 
+    while (true) {
+        int choice;
+        std::cout << "1) Register\n2) Login\n3) Exit\nEnter your choice: ";
+        std::cin >> choice;
 
-int main()
-{
-    EnterInformationFile();
-    IsValidCredential("ianblankenship", "marlow");
-    return 0;
-}
+        switch (choice) {
+            case 1: {
+                std::string username;
+                std::string password;
 
+                std::cout << "Enter a username: ";
+                std::cin >> username;
+                std::cout << "Enter a password: ";
+                std::cin >> password;
 
+                try {
+                    SQLite::Statement query(db, "INSERT INTO users VALUES (?, ?)");
+                    query.bind(1, username);
+                    query.bind(2, password);
+                    query.exec();
+                    std::cout << "User registered successfully\n";
+                } catch (SQLite::Exception& e) {
+                    std::cout << "Error: " << e.what() << '\n';
+                }
+                break;
+            }
 
-// EnterInformationFile meant to allow user to register new user
-// current: takes new credentials (separated by space; username password) and appends value to existing file
-// tbd: connect to db for better/secure storage, allow new accounts to be registered and info entered into this
-void EnterInformationFile()
-{
-    // create object userPassFile in fstream class
-    ofstream userEntryFile ("/Users/ianblankenship/data-managing/userPassFile.txt", ios::app);
+            case 2: {
+                std::string username;
+                std::string password;
 
-    // exit if the file does not exist/cannot be opened
-    if (!userEntryFile)
-    {
-        cout << '\n' << "File Failed to open/Not Found" << '\n';
-        exit(-1);
-    }
+                std::cout << "Enter your username: ";
+                std::cin >> username;
+                std::cout << "Enter your password: ";
+                std::cin >> password;
 
-    // create string var to store user/pass and read input into it
-    string info_store{ };
-    cout << "Enter a username and password, separated by a space: ";
-    getline(cin, info_store);
+                SQLite::Statement query(db, "SELECT password FROM users WHERE username = ?");
+                query.bind(1, username);
 
-    // write string data to file
-    userEntryFile << info_store << endl;
+                if (query.executeStep()) {
+                    std::string stored_password = query.getColumn(0);
 
-    // close stream
-    userEntryFile.close();
-}
+                    if (password == stored_password) {
+                        std::cout << "Login successful\n";
+                    } else {
+                        std::cout << "Incorrect password\n";
+                    }
+                } else {
+                    std::cout << "No user with that username\n";
+                }
+                break;
+            }
 
+            case 3:
+                return 0;
 
-// validate credentials entered by a user (username, password)
-// current: searches file "userPassFile.txt" for a given username & password a user enters and returns (0) if wrong, (1) is correct
-// tbd: will validate and send user to user/session-specific data manager
-int IsValidCredential(string username, string password)
-{
-    // debugging
-    cout << '\n' << username << '\n';
-    // end debug
-
-    // create object for taking inputs
-    ifstream userCheckFile("/Users/ianblankenship/data-managing/userPassFile.txt");
-
-    if (!userCheckFile)
-    {
-        cout << "File not found/error in opening" << '\n';
-        return(-1);
-    }
-
-    // line = temp line store; user = temp username store; pass = temp password store
-    string line_store{ };
-    string user_store{ };
-    string pass_store{ };
-
-    // for ret value
-    int match_or_none{ };
-
-    // while-loop, while still things still to be read-in
-    while (getline(userCheckFile, line_store))
-    {
-        // to discern if what is read is a string
-        stringstream iss(line_store);
-        iss >> user_store >> pass_store;
-
-        // if entered username == username_in_file & password == pass_in_file
-        if (username == user_store && password == pass_store)
-        {
-            cout << '\n' << "Match Found! You're in";
-            match_or_none = 1;
-        }
-        else       // user || pass wrong
-        {
-            cout << '\n' << "Wrong Username or password. Try again.";
-            match_or_none = 0;
+            default:
+                std::cout << "Invalid choice\n";
         }
     }
-
-    // close file stream
-    userCheckFile.close();
-
-    // return validation/lack thereof
-    return match_or_none;
-}
-
-
-// MainMenu function to be before other calls; serves to discern user intent
-// current: display menu in console, take user input and decide where to go; if login, filter (0/1) if user moves to new page
-// tbd: display menu in QtWidget or other GUI application (webapp),
-void MainMenu()
-{
-    cout << "1) New User Registration" << '\n'
-        << "2) Existing User? Login" << '\n'
-        << "3) Not interested? Exit" << endl;
-
-    // read user main menu read in
-    char user_mm_choice{ };
-    cin >> user_mm_choice;
-
-
 }
