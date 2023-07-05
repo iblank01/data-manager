@@ -4,6 +4,10 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 
 
+void mainMenuSelect()
+{
+
+}
 
 int main()
 {
@@ -20,13 +24,15 @@ int main()
     */
     data_base.exec("CREATE TABLE IF NOT EXISTS users (username TEXT UNIQUE, password TEXT)");
 
-    while (true)
-    {
-        int choice{ };
-        std::cout << "1) Register\n2) Login\n3) Exit\nEnter your choice: ";
-        std::cin >> choice;
 
-        switch (choice)
+    int main_menu_choice{ };
+    char repeat_choice{ };
+    do
+    {
+        std::cout << "1) Register\n2) Login\n3) Exit\nEnter your main_menu_choice: ";
+        std::cin >> main_menu_choice;
+
+        switch (main_menu_choice)
         {
             // Register
             case 1:
@@ -51,17 +57,18 @@ int main()
                     std::cout << "User registered successfully\n";
                 }
                 // catch error if it is thrown in "try" block
-                catch (SQLite::Exception& e)
+                catch (SQLite::Exception &e)
                 {
                     // If the username is already taken, SQLite will throw an exception, we catch it and print the error
                     std::cout << "Error: " << e.what() << '\n';
                 }
-                
+
                 break;
-            }   // end case 1
+            }// end case 1
 
             // Login
-            case 2: {
+            case 2:
+            {
                 std::string username;
                 std::string password;
 
@@ -83,25 +90,33 @@ int main()
                     if (password == stored_password)
                     {
                         std::cout << "Login successful\n";
-                    } else
+                    }
+                    else
                     {
                         std::cout << "Incorrect username/password\n";
                     }
-                } else
+                }
+                else
                 {
                     std::cout << "Incorrect username/password\n";
                 }
                 break;
-            }   // end case 2
+            }// end case 2
 
             // exit
             case 3:
             {
                 return 0;
             }
-            // invalid choice (not in provided options)
+
+            // invalid main_menu_choice (not in provided options)
             default:
-                std::cout << "Invalid choice\n";
-        }  // end switch
-    }
+                std::cout << "Invalid main_menu_choice\n";
+        }// end switch
+
+        // ask user if they want to try again
+        std::cout << "Would you like to try again/return to main menu? (y/n): ";
+        std::cin >> repeat_choice;
+
+    } while (repeat_choice == 'y');
 }
