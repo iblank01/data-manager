@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 project(data_managing)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 17)
 
 # adding SQLiteCpp for use in this project
 set(SQLiteCpp_DIR "${PROJECT_SOURCE_DIR}/../git/SQLiteCpp/build")
