@@ -8,9 +8,9 @@ int main()
     std::cout << "**** To be turned into a test suite for SQLiteCpp and SQLite3 for other projects ****" << std::endl;
     std::cout << '\n';
 
-    // create an object 'data_base' of class SQLite::Database and create a table called login-db if it does not already exist
-    SQLite::Database data_base("login-db.db", SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
-    data_base.exec("CREATE TABLE IF NOT EXISTS login-db (date INTEGER PRIMARY KEY, weight INTEGER, notes TEXT);");
+    // create an object 'data_base' of class SQLite::Database and create a table called userinfo-db if it does not already exist
+    SQLite::Database data_base("userinfo-db.db", SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+    data_base.exec("CREATE TABLE IF NOT EXISTS userinfo-db (date INTEGER PRIMARY KEY, weight INTEGER, notes TEXT);");
 
     // get user input for weight, notes, and date
     std::cout << "Hello User! " << '\n' << "Please enter your weight: ";
@@ -29,8 +29,8 @@ int main()
     // data insertion code
     try
     {
-        // query the database login-db and bind the date, weight, and notes that the user entered to the database
-        SQLite::Statement insert_user_stmt(data_base, "INSERT or IGNORE INTO login-db VALUES (?, ?, ?);");
+        // query the database userinfo-db and bind the date, weight, and notes that the user entered to the database
+        SQLite::Statement insert_user_stmt(data_base, "INSERT or IGNORE INTO userinfo-db VALUES (?, ?, ?);");
         insert_user_stmt.bind(1, temp_date);
         insert_user_stmt.bind(2, temp_weight);
         insert_user_stmt.bind(3, temp_notes);
@@ -49,7 +49,7 @@ int main()
     try
     {
         // Compile a SQL query, containing one parameter (index 1)
-        SQLite::Statement query_stmt(data_base, "SELECT * FROM login-db");
+        SQLite::Statement query_stmt(data_base, "SELECT * FROM userinfo-db");
 
         // Loop to execute the query step by step, to get rows of result
         while (query_stmt.executeStep())
